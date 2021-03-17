@@ -38,5 +38,18 @@ namespace Ae.Steam.Client
             var response = await _httpClient.GetJson<SteamAppListResponse>(uri, cancellationToken);
             return response.AppList.Apps;
         }
+
+        public async Task<SteamReviewsResponse> GetAppReviews(SteamReviewsRequest request, CancellationToken cancellationToken)
+        {
+            // https://partner.steamgames.com/doc/store/getreviews
+            var uri = $"http://store.steampowered.com/appreviews/{request.AppId}?json=1" +
+                      $"&filter={request.Filter.ToString().ToLower()}" +
+                      $"&language={request.Language}" +
+                      $"&review_type={request.ReviewType.ToString().ToLower()}" +
+                      $"&purchase_type={request.PurchaseType.ToString().ToLower()}" +
+                      (request.DayRange.HasValue ? $"&day_range={request.DayRange.Value}" : string.Empty) +
+                      (request.StartOffset.HasValue ? $"&start_offset={request.StartOffset.Value}" : string.Empty);
+            return await _httpClient.GetJson<SteamReviewsResponse>(uri, cancellationToken);
+        }
     }
 }

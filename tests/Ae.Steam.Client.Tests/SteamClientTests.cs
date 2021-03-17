@@ -1,4 +1,5 @@
-﻿using Ae.Steam.Client.Exceptions;
+﻿using Ae.Steam.Client.Entities;
+using Ae.Steam.Client.Exceptions;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -11,7 +12,7 @@ namespace Ae.Steam.Client.Tests
     {
         private static readonly HttpClient _httpClient = new HttpClient();
 
-        public SteamClient _steamClient = new SteamClient(_httpClient);
+        public ISteamClient _steamClient = new SteamClient(_httpClient);
 
         [Fact]
         public async Task TestGetAppDetailsNotFound()
@@ -67,6 +68,12 @@ namespace Ae.Steam.Client.Tests
             Assert.Contains(289650u, appIds);
             Assert.Contains(379720u, appIds);
             Assert.Contains(582890u, appIds);
+        }
+
+        [Fact]
+        public async Task TestGetAppReviews()
+        {
+            var appReviews = await _steamClient.GetAppReviews(new SteamReviewsRequest(582890), CancellationToken.None);
         }
     }
 }

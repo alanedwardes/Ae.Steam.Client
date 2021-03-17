@@ -9,5 +9,6 @@ namespace Ae.Steam.Client
     {
         Task<SteamAppDetails> GetAppDetails(uint appId, CancellationToken cancellationToken);
         Task<IReadOnlyList<SteamAppSummary>> GetAppList(CancellationToken cancellationToken);
+        Task<SteamReviewsResponse> GetAppReviews(SteamReviewsRequest request, CancellationToken cancellationToken);
     }
 }

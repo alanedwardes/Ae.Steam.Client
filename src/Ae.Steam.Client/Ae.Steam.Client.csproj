@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>1.0.0</Version>
+    <Description>A client for Valve's Steam APIs.</Description>
+    <Authors>alanedwardes</Authors>
+	<LangVersion>8.0</LangVersion>
+    <WarningsAsErrors>true</WarningsAsErrors>
+	<Nullable>enable</Nullable>
+    <PackageTags>steam;valve</PackageTags>
+    <PackageIconUrl>https://avatars.githubusercontent.com/u/110954</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/alanedwardes/Ae.Steam.Client</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="5.0.1" />
+  </ItemGroup>
+
+</Project>

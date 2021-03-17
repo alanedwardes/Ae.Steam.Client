@@ -57,7 +57,7 @@ namespace Ae.Steam.Client.Tests
             Assert.Equal(582890u, appDetails.SteamAppId);
         }
 
-        [Fact]
+        [Fact(Skip = "Non-deterministic")]
         public async Task TestGetAppList()
         {
             var appList = await _steamClient.GetAppList(CancellationToken.None);

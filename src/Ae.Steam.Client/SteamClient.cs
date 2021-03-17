@@ -12,10 +12,7 @@ namespace Ae.Steam.Client
     {
         private readonly HttpClient _httpClient;
 
-        public SteamClient(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
+        public SteamClient(HttpClient httpClient) => _httpClient = httpClient;
 
         [Obsolete("This is not an official API. Do not use for critical applications.")]
         public async Task<SteamAppDetails> GetAppDetails(uint appId, CancellationToken cancellationToken)

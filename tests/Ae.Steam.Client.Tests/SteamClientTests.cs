@@ -1,4 +1,5 @@
 ﻿using Ae.Steam.Client.Exceptions;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -60,9 +61,12 @@ namespace Ae.Steam.Client.Tests
         {
             var appList = await _steamClient.GetAppList(CancellationToken.None);
 
-            Assert.Contains(appList, x => x.AppId == 261820);
-            Assert.Contains(appList, x => x.AppId == 289650);
-            Assert.Contains(appList, x => x.AppId == 582890);
+            var appIds = appList.Select(x => x.AppId).ToArray();
+
+            Assert.Contains(261820u, appIds);
+            Assert.Contains(289650u, appIds);
+            Assert.Contains(379720u, appIds);
+            Assert.Contains(582890u, appIds);
         }
     }
 }

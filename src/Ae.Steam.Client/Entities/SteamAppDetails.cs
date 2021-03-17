@@ -25,8 +25,28 @@ namespace Ae.Steam.Client.Entities
         public SteamAppDetailsPriceOverview? PriceOverview { get; set; }
         [JsonPropertyName("is_free")]
         public bool IsFree { get; set; }
+
         [JsonPropertyName("required_age")]
-        public string? RequiredAge { get; set; }
+        public JsonElement RequiredAgeRaw { get; set; }
+
+        public uint? RequiredAge
+        {
+            get
+            {
+                if (RequiredAgeRaw.ValueKind == JsonValueKind.Number)
+                {
+                    return RequiredAgeRaw.GetUInt32();
+                }
+
+                if (RequiredAgeRaw.ValueKind == JsonValueKind.String && uint.TryParse(RequiredAgeRaw.GetString(), out var requiredAge))
+                {
+                    return requiredAge;
+                }
+
+                return null;
+            }
+        }
+
         [JsonPropertyName("categories")]
         public IReadOnlyList<SteamAppDetailsCategory> Categories { get; set; } = new SteamAppDetailsCategory[0];
         [JsonPropertyName("genres")]
@@ -42,19 +62,19 @@ namespace Ae.Steam.Client.Entities
         public string? SupportedLanguages { get; set; }
 
         [JsonPropertyName("pc_requirements")]
-        internal JsonElement PcRequirementsInternal { get; set; }
-        public SteamAppDetailsRequirements? PcRequirements => PcRequirementsInternal.ValueKind != JsonValueKind.Object ? null :
-            JsonSerializer.Deserialize<SteamAppDetailsRequirements>(PcRequirementsInternal.GetRawText());
+        public JsonElement PcRequirementsRaw { get; set; }
+        public SteamAppDetailsRequirements? PcRequirements => PcRequirementsRaw.ValueKind != JsonValueKind.Object ? null :
+            JsonSerializer.Deserialize<SteamAppDetailsRequirements>(PcRequirementsRaw.GetRawText());
 
         [JsonPropertyName("mac_requirements")]
-        internal JsonElement MacRequirementsInternal { get; set; }
-        public SteamAppDetailsRequirements? MacRequirements => MacRequirementsInternal.ValueKind != JsonValueKind.Object ? null :
-            JsonSerializer.Deserialize<SteamAppDetailsRequirements>(MacRequirementsInternal.GetRawText());
+        public JsonElement MacRequirementsRaw { get; set; }
+        public SteamAppDetailsRequirements? MacRequirements => MacRequirementsRaw.ValueKind != JsonValueKind.Object ? null :
+            JsonSerializer.Deserialize<SteamAppDetailsRequirements>(MacRequirementsRaw.GetRawText());
 
         [JsonPropertyName("linux_requirements")]
-        internal JsonElement LinuxRequirementsInternal { get; set; }
-        public SteamAppDetailsRequirements? LinuxRequirements => LinuxRequirementsInternal.ValueKind != JsonValueKind.Object ? null :
-            JsonSerializer.Deserialize<SteamAppDetailsRequirements>(LinuxRequirementsInternal.GetRawText());
+        public JsonElement LinuxRequirementsRaw { get; set; }
+        public SteamAppDetailsRequirements? LinuxRequirements => LinuxRequirementsRaw.ValueKind != JsonValueKind.Object ? null :
+            JsonSerializer.Deserialize<SteamAppDetailsRequirements>(LinuxRequirementsRaw.GetRawText());
 
         [JsonPropertyName("platforms")]
         public SteamAppDetailsPlatforms Platforms { get; set; }

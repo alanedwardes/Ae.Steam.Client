@@ -26,7 +26,7 @@ namespace Ae.Steam.Client.Entities
         [JsonPropertyName("is_free")]
         public bool IsFree { get; set; }
         [JsonPropertyName("required_age")]
-        public byte RequiredAge { get; set; }
+        public string? RequiredAge { get; set; }
         [JsonPropertyName("categories")]
         public IReadOnlyList<SteamAppDetailsCategory> Categories { get; set; } = new SteamAppDetailsCategory[0];
         [JsonPropertyName("genres")]

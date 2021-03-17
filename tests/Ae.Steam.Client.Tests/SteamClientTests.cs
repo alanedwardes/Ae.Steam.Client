@@ -34,6 +34,7 @@ namespace Ae.Steam.Client.Tests
 
             Assert.Equal("Assassin's Creed® Unity", appDetails.Name);
             Assert.Equal(289650u, appDetails.SteamAppId);
+            Assert.Null(appDetails.RequiredAge);
         }
 
         [Fact]

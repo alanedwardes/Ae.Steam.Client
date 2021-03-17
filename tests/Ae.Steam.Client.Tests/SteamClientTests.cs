@@ -43,7 +43,7 @@ namespace Ae.Steam.Client.Tests
 
             Assert.Equal("DOOM", appDetails.Name);
             Assert.Equal(379720u, appDetails.SteamAppId);
-            Assert.Equal(18u, appDetails.RequiredAge);
+            Assert.InRange(appDetails.RequiredAge.Value, 17u, 18u);
         }
 
         [Fact]

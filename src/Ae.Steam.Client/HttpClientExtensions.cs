@@ -10,6 +10,20 @@ namespace Ae.Steam.Client
 {
     internal static class HttpClientExtensions
     {
+        public static async Task<string> GetString(this HttpClient httpClient, string uri, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var response = await httpClient.GetAsync(uri, cancellationToken);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsStringAsync();
+            }
+            catch (Exception e)
+            {
+                throw new SteamClientException($"Request failed to GET {uri}", e);
+            }
+        }
+
         public static async Task<T> GetJson<T>(this HttpClient httpClient, string uri, CancellationToken cancellationToken) where T : class
         {
             Stream stream;

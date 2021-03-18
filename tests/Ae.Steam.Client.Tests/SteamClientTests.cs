@@ -1,7 +1,11 @@
 ﻿using Ae.Steam.Client.Entities;
 using Ae.Steam.Client.Exceptions;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -74,6 +78,15 @@ namespace Ae.Steam.Client.Tests
         public async Task TestGetAppReviews()
         {
             var appReviews = await _steamClient.GetAppReviews(new SteamReviewsRequest(582890), CancellationToken.None);
+        }
+
+        [Fact]
+        public async Task TestSearchApps()
+        {
+            var appResults = await _steamClient.SearchApps(new SteamSearchRequest{Term = "estranged"}, CancellationToken.None);
+
+            Assert.Contains(appResults, x => x.AppId == 261820u);
+            Assert.Contains(appResults, x => x.AppId == 582890u);
         }
     }
 }

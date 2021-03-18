@@ -2,7 +2,9 @@
 using Ae.Steam.Client.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,11 +12,14 @@ namespace Ae.Steam.Client
 {
     public sealed class SteamClient : ISteamClient
     {
+        public const string ObsoleteWarning = "This is not an official API. Do not use for critical applications.";
+        private readonly Regex storeUrlRegex = new Regex("/app/(?<Id>[0-9]*)/(?<Name>.*?)/");
+
         private readonly HttpClient _httpClient;
 
         public SteamClient(HttpClient httpClient) => _httpClient = httpClient;
 
-        [Obsolete("This is not an official API. Do not use for critical applications.")]
+        [Obsolete(ObsoleteWarning)]
         public async Task<SteamAppDetails> GetAppDetails(uint appId, CancellationToken cancellationToken)
         {
             var uri = $"https://store.steampowered.com/api/appdetails/?appids={appId}";
@@ -36,6 +41,7 @@ namespace Ae.Steam.Client
             return response.AppList.Apps;
         }
 
+        [Obsolete(ObsoleteWarning)]
         public async Task<SteamReviewsResponse> GetAppReviews(SteamReviewsRequest request, CancellationToken cancellationToken)
         {
             // https://partner.steamgames.com/doc/store/getreviews
@@ -47,6 +53,37 @@ namespace Ae.Steam.Client
                       (request.DayRange.HasValue ? $"&day_range={request.DayRange.Value}" : string.Empty) +
                       (request.StartOffset.HasValue ? $"&start_offset={request.StartOffset.Value}" : string.Empty);
             return await _httpClient.GetJson<SteamReviewsResponse>(uri, cancellationToken);
+        }
+
+        public async Task<IReadOnlyList<SteamAppSummary>> SearchApps(SteamSearchRequest request, CancellationToken cancellationToken)
+        {
+            var options = new Dictionary<string, string>();
+
+            if (request.Term != null)
+            {
+                options.Add("term", request.Term);
+            }
+
+            options.Add("start", request.Start.ToString());
+            options.Add("count", request.Count.ToString());
+
+            if (request.Tags.Any())
+            {
+                options.Add("tags", string.Join(",", request.Tags.Select(x => (uint)x)));
+            }
+
+            var uri = $"https://store.steampowered.com/search/results" +
+                (options.Any() ? "?" + string.Join("&", options.Select(x => $"{x.Key}={x.Value}")) : null);
+
+            var result = await _httpClient.GetString(uri, cancellationToken);
+
+            var matches = storeUrlRegex.Matches(result);
+
+            return matches.Cast<Match>().Select(x => new SteamAppSummary
+            {
+                AppId = uint.Parse(x.Groups["Id"].Value),
+                Name = x.Groups["Name"].Value.Replace("_", " ")
+            }).ToArray();
         }
     }
 }

@@ -88,5 +88,12 @@ namespace Ae.Steam.Client.Tests
             Assert.Contains(appResults, x => x.AppId == 261820u);
             Assert.Contains(appResults, x => x.AppId == 582890u);
         }
+
+        [Fact]
+        public async Task TestIsAppAdultOnly()
+        {
+            Assert.False(await _steamClient.IsAppAdultOnly(582890, CancellationToken.None));
+            Assert.True(await _steamClient.IsAppAdultOnly(1131990, CancellationToken.None));
+        }
     }
 }

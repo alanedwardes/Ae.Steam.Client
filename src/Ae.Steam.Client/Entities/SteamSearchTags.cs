@@ -1,5 +1,4 @@
-﻿
-namespace Ae.Steam.Client.Entities
+﻿namespace Ae.Steam.Client.Entities
 {
     public enum SteamSearchTags : uint
     {

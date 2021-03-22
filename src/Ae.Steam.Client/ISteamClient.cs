@@ -14,5 +14,7 @@ namespace Ae.Steam.Client
         Task<SteamReviewsResponse> GetAppReviews(SteamReviewsRequest request, CancellationToken cancellationToken);
         [Obsolete(SteamClient.ObsoleteWarning)]
         Task<IReadOnlyList<SteamAppSummary>> SearchApps(SteamSearchRequest request, CancellationToken cancellationToken);
+        [Obsolete(SteamClient.ObsoleteWarning)]
+        Task<bool> IsAppAdultOnly(uint appId, CancellationToken cancellationToken);
     }
 }

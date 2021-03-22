@@ -3,6 +3,7 @@ using Ae.Steam.Client.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -53,6 +54,14 @@ namespace Ae.Steam.Client
                       (request.DayRange.HasValue ? $"&day_range={request.DayRange.Value}" : string.Empty) +
                       (request.StartOffset.HasValue ? $"&start_offset={request.StartOffset.Value}" : string.Empty);
             return await _httpClient.GetJson<SteamReviewsResponse>(uri, cancellationToken);
+        }
+
+        [Obsolete(ObsoleteWarning)]
+        public async Task<bool> IsAppAdultOnly(uint appId, CancellationToken cancellationToken)
+        {
+            var response = await _httpClient.GetAsync("https://store.steampowered.com/app/" + appId);
+            var redirectCodes = new[] { HttpStatusCode.MovedPermanently, HttpStatusCode.Redirect };
+            return redirectCodes.Contains(response.StatusCode) || response.RequestMessage.RequestUri.AbsolutePath.StartsWith("/agecheck/");
         }
 
         public async Task<IReadOnlyList<SteamAppSummary>> SearchApps(SteamSearchRequest request, CancellationToken cancellationToken)

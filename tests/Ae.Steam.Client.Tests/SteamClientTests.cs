@@ -94,6 +94,7 @@ namespace Ae.Steam.Client.Tests
         {
             Assert.False(await _steamClient.IsAppAdultOnly(582890, CancellationToken.None));
             Assert.True(await _steamClient.IsAppAdultOnly(1131990, CancellationToken.None));
+            await Assert.ThrowsAsync<SteamClientException>(() => _steamClient.IsAppAdultOnly(uint.MaxValue, CancellationToken.None));
         }
     }
 }

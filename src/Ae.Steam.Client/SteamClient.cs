@@ -60,8 +60,19 @@ namespace Ae.Steam.Client
         public async Task<bool> IsAppAdultOnly(uint appId, CancellationToken cancellationToken)
         {
             var response = await _httpClient.GetAsync("https://store.steampowered.com/app/" + appId);
-            var redirectCodes = new[] { HttpStatusCode.MovedPermanently, HttpStatusCode.Redirect };
-            return redirectCodes.Contains(response.StatusCode) || response.RequestMessage.RequestUri.AbsolutePath.StartsWith("/agecheck/");
+
+            var finalUri = response.RequestMessage.RequestUri;
+            if (finalUri.AbsolutePath.StartsWith("/agecheck/"))
+            {
+                return true;
+            }
+
+            if (finalUri.AbsolutePath.StartsWith("/app/"))
+            {
+                return false;
+            }
+            
+            throw new SteamClientException($"App {appId} not found");
         }
 
         public async Task<IReadOnlyList<SteamAppSummary>> SearchApps(SteamSearchRequest request, CancellationToken cancellationToken)
